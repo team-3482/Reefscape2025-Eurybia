@@ -124,24 +124,21 @@ public final class PhysicalConstants {
         public static final int CORAL_MOTOR_ID = 23;
         /** The CAN ID for the Manipulator Algae TalonFX  */
         public static final int ALGAE_MOTOR_ID = 24;
-        /** The CAN ID for the Funnel (Coral) TalonFX */
-        public static final int FUNNEL_MOTOR_ID = 25;
 
         /** The speed at which the Manipulator Coral motor will intake at */
-        public static final double CORAL_INTAKE_SPEED = 0.15;
+        public static final double CORAL_INTAKE_SPEED = 0.5;
         /** The speed at which the Manipulator Coral motor will outtake at */
         public static final double CORAL_OUTTAKE_SPEED = 0.8;
         /** The speed at which the Manipulator Algae motor will intake at */
-        public static final double ALGAE_INTAKE_SPEED = 0.3;
+        public static final double ALGAE_INTAKE_SPEED = 0.5;
         /** The speed at which the Manipulator Algae motor will outtake at */
-        public static final double ALGAE_OUTTAKE_SPEED = 0.4;
+        public static final double ALGAE_OUTTAKE_SPEED = 1;
         /** The speed at which the Manipulator Algae motor will hold the Algae in place with */
-        public static final double ALGAE_HOLD_SPEED = 0.05;
-        /** The speed at which the Funnel (Coral) motor will intake at */
-        public static final double FUNNEL_INTAKE_SPEED = 0.1;
+        public static final double ALGAE_HOLD_SPEED = 0.15;
 
         /** The current limit for the Manipulator Coral motor */
-        public static final double CORAL_CURRENT_LIMIT = 100;
+        public static final double CORAL_CURRENT_LIMIT = 60;
+
         /** The current limit for the Manipulator Algae motor */
         public static final double ALGAE_CURRENT_LIMIT = 30;
     }

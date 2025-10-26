@@ -21,6 +21,7 @@ import frc.robot.constants.SwerveConstants;
 import frc.robot.constants.VirtualConstants.*;
 import frc.robot.elevator.ElevatorSubsystem;
 import frc.robot.elevator.MoveElevatorCommand;
+import frc.robot.elevator.PostIntakeSafetyCommand;
 import frc.robot.elevator.ZeroElevatorCommand;
 import frc.robot.led.LEDSubsystem;
 import frc.robot.manipulator.*;
@@ -198,30 +199,51 @@ public class RobotContainer {
         // B -> Cancel all commands
         this.operatorController.b().onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
 
-        // D-PAD: Left -> Zero, Down -> L2, Right -> L3, Up -> L4
         Supplier<Boolean> slowElevatorSupplier = () -> this.operatorController.getHID().getRightTriggerAxis() >= 0.5;
 
+        // D-PAD Left -> Zero
         this.operatorController.povLeft().onTrue(Commands.sequence(
             new PivotSafetyCommand(),
             new ZeroElevatorCommand()
         ));
 
+        // D-PAD Down -> L2 Coral
         this.operatorController.povDown().onTrue(Commands.sequence(
+            new PostIntakeSafetyCommand(),
             new PivotSafetyCommand(ElevatorPositions.L2_CORAL),
             new MoveElevatorCommand(ElevatorPositions.L2_CORAL, slowElevatorSupplier),
             new MovePivotCommand(PivotPositions.CORAL, PivotPositionNames.CORAL)
         ));
 
+        // D-PAD Right -> L3 Coral
         this.operatorController.povRight().onTrue(Commands.sequence(
+            new PostIntakeSafetyCommand(),
             new PivotSafetyCommand(ElevatorPositions.L3_CORAL),
             new MoveElevatorCommand(ElevatorPositions.L3_CORAL, slowElevatorSupplier),
             new MovePivotCommand(PivotPositions.CORAL, PivotPositionNames.CORAL)
         ));
 
+
+        // D-PAD Up -> L4 Coral
         this.operatorController.povUp().onTrue(Commands.sequence(
+            new PostIntakeSafetyCommand(),
             new PivotSafetyCommand(ElevatorPositions.L4_CORAL),
             new MoveElevatorCommand(ElevatorPositions.L4_CORAL, slowElevatorSupplier),
             new MovePivotCommand(PivotPositions.CORAL, PivotPositionNames.CORAL)
+        ));
+
+        // TODO PLACEHOLDER!!!!!!!!!
+        this.operatorController.leftStick().onTrue(Commands.sequence(
+            new PivotSafetyCommand(ElevatorPositions.IDLE_HEIGHT),
+            new MoveElevatorCommand(ElevatorPositions.IDLE_HEIGHT, slowElevatorSupplier),
+            new MovePivotCommand(PivotPositions.PROCESSOR, PivotPositionNames.CORAL)
+        ));
+
+        // TODO PLACEHOLDER!!!!!!!!!
+        this.operatorController.rightStick().onTrue(Commands.sequence(
+            new PivotSafetyCommand(ElevatorPositions.L4_CORAL),
+            new MoveElevatorCommand(ElevatorPositions.L4_CORAL, slowElevatorSupplier),
+            new MovePivotCommand(PivotPositions.BARGE, PivotPositionNames.CORAL)
         ));
 
         // Left Bumper -> Intake Coral
@@ -231,14 +253,13 @@ public class RobotContainer {
                 new MoveElevatorCommand(ElevatorPositions.INTAKE, slowElevatorSupplier),
                 new MovePivotCommand(PivotPositions.INTAKE, PivotPositionNames.INTAKE),
                 new IntakeCoralCommand(),
-                new MoveElevatorCommand(ElevatorPositions.POST_INTAKE, slowElevatorSupplier),
+                new MoveElevatorCommand(ElevatorPositions.SAFE_CORAL, slowElevatorSupplier),
                 new MovePivotCommand(PivotPositions.ELEVATING, PivotPositionNames.ELEVATING)
             ));
         }
 
         //Right Bumper -> Outtake Coral
-        this.operatorController.rightBumper()
-            .whileTrue(new OuttakeCoralCommand());
+        this.operatorController.rightBumper().whileTrue(new OuttakeCoralCommand());
 
         // A -> Intake L2 Algae, Y -> Intake L3 Algae
         this.operatorController.a().onTrue(Commands.sequence(
@@ -256,10 +277,7 @@ public class RobotContainer {
         ));
 
         // X -> Outtake Algae
-        this.operatorController.x().whileTrue(Commands.sequence(
-            new MovePivotCommand(PivotPositions.ALGAE, PivotPositionNames.ALGAE),
-            new OuttakeAlgaeCommand()
-        ));
+        this.operatorController.x().whileTrue(new OuttakeAlgaeCommand());
 
 
         // Double Rectangle -> Zero Elevator

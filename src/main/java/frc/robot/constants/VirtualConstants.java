@@ -37,7 +37,6 @@ public final class VirtualConstants {
     /** Constants for elevator heights */
     public static final class ElevatorPositions {
         public static final double INTAKE = -0.02; // this offset makes sure it actually goes to zero, something is off here
-        public static final double POST_INTAKE = 0.2; // TODO placeholder
         public static final double L2_CORAL = 0.19;
         public static final double L3_CORAL = 0.38;
         public static final double L4_CORAL = 0.78;
@@ -46,11 +45,15 @@ public final class VirtualConstants {
         public static final double L3_ALGAE = 0.41;
 
         public static final double IDLE_HEIGHT = INTAKE;
+
+        public static final double SAFE_CORAL = 0.05;
     }
 
     public static final class PivotPositions {
         public static final double CORAL = 160;
         public static final double ALGAE = 90;
+        public static final double PROCESSOR = 45;
+        public static final double BARGE = 135;
         public static final double INTAKE = 0;
         public static final double ELEVATING = ALGAE;
     }

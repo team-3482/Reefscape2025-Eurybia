@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.constants.PhysicalConstants.RobotConstants.CAN_BUS;
 
-/** Subsystem to manage the manipulator and intake funnel. */
+/** Subsystem to manage the manipulator. */
 public class ManipulatorSubsystem extends SubsystemBase {
     // Use Bill Pugh Singleton Pattern for efficient lazy initialization (thread-safe !)
     private static class ManipulatorSubsystemHolder {
@@ -28,7 +28,6 @@ public class ManipulatorSubsystem extends SubsystemBase {
 
     private TalonFX coralMotor = new TalonFX(ManipulatorConstants.CORAL_MOTOR_ID, CAN_BUS);
     private TalonFX algaeMotor = new TalonFX(ManipulatorConstants.ALGAE_MOTOR_ID, CAN_BUS);
-    private TalonFX funnelMotor = new TalonFX(ManipulatorConstants.FUNNEL_MOTOR_ID, CAN_BUS);
 
     private SubsystemStates coralState;
 
@@ -37,7 +36,6 @@ public class ManipulatorSubsystem extends SubsystemBase {
 
         setState("Algae", SubsystemStates.IDLE);
         setState("Coral", SubsystemStates.IDLE);
-        setState("Funnel", SubsystemStates.IDLE);
 
         CurrentLimitsConfigs limitConfigs = new CurrentLimitsConfigs();
         limitConfigs.StatorCurrentLimitEnable = true;
@@ -67,12 +65,6 @@ public class ManipulatorSubsystem extends SubsystemBase {
     public void setAlgaeMotor(double speed) {
         algaeMotor.set(speed);
     }
-
-    /**
-     * Set the speed of the Funnel Intake motor.
-     * @param speed Speed between -1.0 and 1.0
-     */
-    public void setFunnelMotor(double speed) { funnelMotor.set(speed); }
 
     /**
      * Logs the state of the subsystem to AdvantageKit and SmartDashboard
@@ -106,14 +98,6 @@ public class ManipulatorSubsystem extends SubsystemBase {
      */
     public double getAlgaeStatorCurrent() {
         return algaeMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    /**
-     * Gets the active rotor velocity of the Coral motor.
-     * @return the velocity
-     */
-    public double getCoralRotorVelocity() {
-        return coralMotor.getRotorVelocity().getValueAsDouble();
     }
 
     /**
