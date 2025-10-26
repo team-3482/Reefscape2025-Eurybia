@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,7 +44,7 @@ public class Robot extends LoggedRobot {
 
             System.out.println("logging to: " + path + " (new directory: " + new File(path).mkdirs() + ")");
 
-            SignalLogger.setPath(path);
+            // SignalLogger.setPath(path);
 
             Logger.addDataReceiver(new WPILOGWriter(path)); // Log to a USB stick ("/U/logs")
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables

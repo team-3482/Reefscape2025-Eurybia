@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.auto.PIDAlignReefCommand;
 import frc.robot.constants.PhysicalConstants.ElevatorConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.constants.VirtualConstants.*;
@@ -31,6 +33,7 @@ import frc.robot.pivot.PivotSubsystem;
 import frc.robot.pivot.ZeroPivotCommand;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.swerve.SwerveTelemetry;
+import frc.robot.utilities.CommandGenerators;
 import frc.robot.vision.LimelightSubsystem;
 import frc.robot.vision.QuestNavSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -83,11 +86,61 @@ public class RobotContainer {
         ManipulatorSubsystem.getInstance();
     }
 
+
+    /** Register all NamedCommands for PathPlanner use */
+    private void registerNamedCommands() {
+        NamedCommands.registerCommand("MoveElevatorToIntake",
+            new MoveElevatorCommand(ElevatorPositions.INTAKE, false));
+        NamedCommands.registerCommand("MoveElevatorToIdle",
+            new MoveElevatorCommand(ElevatorPositions.IDLE_HEIGHT, false));
+
+        NamedCommands.registerCommand("MoveElevatorToL2Coral",
+            new MoveElevatorCommand(ElevatorPositions.L2_CORAL, false));
+        NamedCommands.registerCommand("MoveElevatorToL3Coral",
+            new MoveElevatorCommand(ElevatorPositions.L3_CORAL, false));
+        NamedCommands.registerCommand("MoveElevatorToL4Coral",
+            new MoveElevatorCommand(ElevatorPositions.L4_CORAL, false));
+
+        NamedCommands.registerCommand("MoveElevatorToL2Algae",
+            new MoveElevatorCommand(ElevatorPositions.L2_ALGAE, false));
+        NamedCommands.registerCommand("MoveElevatorToL3Algae",
+            new MoveElevatorCommand(ElevatorPositions.L3_ALGAE, false));
+
+        NamedCommands.registerCommand("IntakeCoral",
+            new IntakeCoralCommand());
+        NamedCommands.registerCommand("OuttakeCoral",
+            new OuttakeCoralCommand());
+        NamedCommands.registerCommand("IntakeAlgae",
+            new IntakeAlgaeCommand());
+        NamedCommands.registerCommand("OuttakeAlgae",
+            new OuttakeAlgaeCommand());
+
+        NamedCommands.registerCommand("ZeroElevator",
+            new ZeroElevatorCommand());
+        NamedCommands.registerCommand("ZeroPivot",
+            new ZeroPivotCommand());
+
+        NamedCommands.registerCommand("PivotSafety",
+            new PivotSafetyCommand());
+        NamedCommands.registerCommand("PostIntakeSafety",
+            new PostIntakeSafetyCommand());
+
+        NamedCommands.registerCommand("PIDAlignLeftReef", CommandGenerators.WaitForLimelightsCommand(
+            new PIDAlignReefCommand(-1, false, false)
+        ));
+        NamedCommands.registerCommand("PIDAlignCenterReef", CommandGenerators.WaitForLimelightsCommand(
+            new PIDAlignReefCommand(0, false, false)
+        ));
+        NamedCommands.registerCommand("PIDAlignRightReef", CommandGenerators.WaitForLimelightsCommand(
+            new PIDAlignReefCommand(1, false, false)
+        ));
+    }
+
     /**
      * This method initializes the swerve subsystem and configures its bindings with the driver controller.
      * This is based on the Phoenix6 Swerve example.
      */
-    private void configureDrivetrain(){
+    private void configureDrivetrain() {
         final SwerveSubsystem Drivetrain = SwerveSubsystem.getInstance();
 
         final double NormalSpeed = SwerveConstants.kSpeedNormal.in(Units.MetersPerSecond);
@@ -188,10 +241,26 @@ public class RobotContainer {
 
     /** Configures the button bindings of the driver controller. */
     public void configureDriverBindings() {
-        // Double Rectangle
+        // Double Rectangle -> Reset pose
         this.driverController.back().onTrue(Commands.runOnce(() -> SwerveSubsystem.getInstance().resetPose(Pose2d.kZero)));
-        // Burger
+        // Burger -> Reset rotation to zero
         this.driverController.start().onTrue(Commands.runOnce(() -> SwerveSubsystem.getInstance().seedFieldCentric()));
+
+        // Left Bumper -> Auto-align to left side
+        this.driverController.leftBumper().whileTrue(Commands.sequence(
+            CommandGenerators.WaitForLimelightsCommand(new PIDAlignReefCommand(-1, true, true)),
+            new PIDAlignReefCommand(-1, true, false)
+        ));
+
+        // Right Bumper -> Auto-align to right side
+        this.driverController.rightBumper().whileTrue(Commands.sequence(
+            CommandGenerators.WaitForLimelightsCommand(new PIDAlignReefCommand(1, true, true)),
+            new PIDAlignReefCommand(1, true, false)
+        ));
+
+        // A -> Auto-align to Algae
+        this.driverController.a().whileTrue(
+            CommandGenerators.WaitForLimelightsCommand(new PIDAlignReefCommand(0, false, false)));
     }
 
     /** Configures the button bindings of the operator controller. */

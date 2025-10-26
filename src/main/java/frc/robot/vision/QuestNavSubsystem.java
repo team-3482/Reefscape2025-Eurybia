@@ -48,9 +48,11 @@ public class QuestNavSubsystem extends SubsystemBase {
 
             SmartDashboard.putNumber("QuestNav/Latency", questNav.getLatency());
             SmartDashboard.putNumber("QuestNav/FramesPerRobotCycle", poseFrames.length);
+            SmartDashboard.putNumber("QuestNav/BatteryPercent", questNav.getBatteryPercent().getAsInt());
 
             Logger.recordOutput("QuestNav/Latency", questNav.getLatency());
             Logger.recordOutput("QuestNav/FramesPerRobotCycle", poseFrames.length);
+            Logger.recordOutput("QuestNav/BatteryPercent", questNav.getBatteryPercent().getAsInt());
         }
 
     }
