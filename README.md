@@ -1,3 +1,3 @@
-# Reefscape2025-Offseason
+# Reefscape2025-Eurybia
 
-FRC Reefscape off-season bot repository by Team 3482 Arrowbotics (repo name will change after bot name is decided)
+FRC Reefscape off-season bot repository by Team 3482 Arrowbotics
