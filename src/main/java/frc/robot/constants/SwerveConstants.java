@@ -74,7 +74,7 @@ public class SwerveConstants {
      * Theoretical free speed (m/s) at 12 V applied output;
      * This needs to be tuned to your individual robot
      */
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.73); // default was 4.73
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.81); // default was 4.73
 
     /** Realistic speed robot to run at */
     public static final LinearVelocity kSpeedNormal = MetersPerSecond.of(3.5);
@@ -180,7 +180,6 @@ public class SwerveConstants {
 
     private static final Distance kBackRightXPos = Inches.of(-11.3125);
     private static final Distance kBackRightYPos = Inches.of(-11.3125);
-
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(

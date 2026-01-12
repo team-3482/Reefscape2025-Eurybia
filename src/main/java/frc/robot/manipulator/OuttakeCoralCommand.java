@@ -16,11 +16,8 @@ public class OuttakeCoralCommand extends Command {
 
     @Override
     public void initialize() {
-        if(
-            PivotSubsystem.getInstance().getPositionName().equals(PivotPositionNames.CORAL)
-            || PivotSubsystem.getInstance().getPositionName().equals(PivotPositionNames.L4_CORAL)
-        ) {
-            ManipulatorSubsystem.getInstance().setCoralMotor(-ManipulatorConstants.CORAL_OUTTAKE_SPEED);
+        if(PivotSubsystem.getInstance().getPositionName().equals(PivotPositionNames.CORAL)) {
+            ManipulatorSubsystem.getInstance().setCoralMotor(ManipulatorConstants.CORAL_OUTTAKE_SPEED);
             ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.OUTTAKING);
         }
     }

@@ -20,10 +20,6 @@ public final class PhysicalConstants {
         public static final int LED_LENGTH = 80;
         /** Blink cooldown; time that the selected blink color will stay for, then blink */
         public static final double BLINK_COOLDOWN = 0.2;
-        /** Animate scrolling gradient for the LEDs */
-        public static final boolean SCROLL = true; // Might cause horrible performance issues, turn off if rio lagging
-        /** How fast (m/s) to scroll */
-        public static final double SCROLL_SPEED = 1.0;
     }
 
     public static final class ElevatorConstants {
@@ -42,7 +38,7 @@ public final class PhysicalConstants {
         public static final double LINEAR_CONSTANT_MULT = 0.75;
 
         /** Tolerance used for elevator command in meters. */
-        public static final double HEIGHT_TOLERANCE = 0.05;
+        public static final double HEIGHT_TOLERANCE = 0.01;
 
         /** The voltage to run the motors at to zero the elevator */
         public static final double ZERO_ELEVATOR_VOLTAGE = 2;
@@ -83,6 +79,9 @@ public final class PhysicalConstants {
         /** The CAN ID for the Pivot TalonFX */
         public static final int MOTOR_ID = 22;
 
+        /** The DIO ID for the limit switch */
+        public static final int LIMIT_SWITCH_ID = 0;
+
         /** Lower angle limit */
         public static final double LOWER_ANGLE_LIMIT = 0;
         /** Upper angle limit */
@@ -95,7 +94,7 @@ public final class PhysicalConstants {
         /* Motion Magic Config */
         public static final double ROTOR_TO_MECHANISM_RATIO = (double) 203280 / 3240;
         public static final double CRUISE_SPEED = 3;
-        public static final double ACCELERATION = 7.5;
+        public static final double ACCELERATION = 6.5;
 
         /** Gains used for Motion Magic slot 0. */
         public static final class Slot0Gains {
@@ -103,7 +102,7 @@ public final class PhysicalConstants {
             public static final double kS = 0.23;
             public static final double kV = 0;
             public static final double kA = 0;
-            public static final double kP = 192;
+            public static final double kP = 128;
             public static final double kI = 0;
             public static final double kD = 0;
         }
@@ -114,7 +113,7 @@ public final class PhysicalConstants {
         public static final double MAXIMUM_SAFE = 140;
 
         /** The speed that the pivot zeros at */
-        public static final double ZERO_SPEED = 0.2;
+        public static final double ZERO_SPEED = 0.4;
 
     }
 
@@ -125,24 +124,21 @@ public final class PhysicalConstants {
         public static final int CORAL_MOTOR_ID = 23;
         /** The CAN ID for the Manipulator Algae TalonFX  */
         public static final int ALGAE_MOTOR_ID = 24;
-        /** The CAN ID for the Funnel (Coral) TalonFX */
-        public static final int FUNNEL_MOTOR_ID = 25;
 
         /** The speed at which the Manipulator Coral motor will intake at */
-        public static final double CORAL_INTAKE_SPEED = 0.3;
+        public static final double CORAL_INTAKE_SPEED = 0.5;
         /** The speed at which the Manipulator Coral motor will outtake at */
-        public static final double CORAL_OUTTAKE_SPEED = 0.3;
+        public static final double CORAL_OUTTAKE_SPEED = 0.8;
         /** The speed at which the Manipulator Algae motor will intake at */
-        public static final double ALGAE_INTAKE_SPEED = 0.3;
+        public static final double ALGAE_INTAKE_SPEED = 0.5;
         /** The speed at which the Manipulator Algae motor will outtake at */
-        public static final double ALGAE_OUTTAKE_SPEED = 0.4;
+        public static final double ALGAE_OUTTAKE_SPEED = 1;
         /** The speed at which the Manipulator Algae motor will hold the Algae in place with */
-        public static final double ALGAE_HOLD_SPEED = 0.05;
-        /** The speed at which the Funnel (Coral) motor will intake at */
-        public static final double FUNNEL_INTAKE_SPEED = 0.1;
+        public static final double ALGAE_HOLD_SPEED = 0.15;
 
         /** The current limit for the Manipulator Coral motor */
-        public static final double CORAL_CURRENT_LIMIT = 200;
+        public static final double CORAL_CURRENT_LIMIT = 60;
+
         /** The current limit for the Manipulator Algae motor */
         public static final double ALGAE_CURRENT_LIMIT = 30;
     }

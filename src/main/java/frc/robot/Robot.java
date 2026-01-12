@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,10 +12,10 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.VirtualConstants;
+import frc.robot.constants.VirtualConstants.SubsystemStates;
 import frc.robot.led.LEDSubsystem;
 import frc.robot.led.StatusColors;
-import frc.robot.utilities.Elastic;
+import frc.robot.manipulator.ManipulatorSubsystem;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -45,7 +44,7 @@ public class Robot extends LoggedRobot {
 
             System.out.println("logging to: " + path + " (new directory: " + new File(path).mkdirs() + ")");
 
-            SignalLogger.setPath(path);
+            // SignalLogger.setPath(path);
 
             Logger.addDataReceiver(new WPILOGWriter(path)); // Log to a USB stick ("/U/logs")
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
@@ -99,15 +98,10 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("Auton/AutonCommand", auton.getName());
 
         if (this.auton != null) {
+            ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.HOLDING);
             this.auton.schedule();
         } else {
             System.err.println("No auton command found.");
-            Elastic.sendNotification(new Elastic.Notification(
-                    Elastic.NotificationLevel.ERROR,
-                    "Auton Error",
-                    "No auton command found."
-            ));
-
             LEDSubsystem.getInstance().setColor(StatusColors.ERROR);
         }
 

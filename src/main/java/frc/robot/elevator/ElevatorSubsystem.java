@@ -240,7 +240,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void motionMagicPosition(double position, boolean clamp, boolean slow) {
         if (clamp) {
-            position = MathUtil.clamp(position, ElevatorPositions.INTAKE, ElevatorConstants.MAX_HEIGHT);
+            position = MathUtil.clamp(position, ElevatorPositions.IDLE_HEIGHT, ElevatorConstants.MAX_HEIGHT);
         }
 
         this.lastSetGoal = position;

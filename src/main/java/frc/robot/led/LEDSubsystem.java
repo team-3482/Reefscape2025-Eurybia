@@ -1,7 +1,5 @@
 package frc.robot.led;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -26,7 +24,6 @@ public class LEDSubsystem extends SubsystemBase {
 
     private final AddressableLED LEDStrip = new AddressableLED(LEDConstants.PWM_HEADER);
     private final AddressableLEDBuffer LEDStripBuffer = new AddressableLEDBuffer(LEDConstants.LED_LENGTH);
-    private final Distance LEDSpacing = Units.Meter.of(1 / 120.0);
 
     private StatusColors currentColor = StatusColors.OFF;
     private StatusColors blinkColor = StatusColors.OFF;
@@ -34,8 +31,6 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean shouldBlink = false;
     private final Timer blinkTimer = new Timer();
     private final Timer stickyTimer = new Timer();
-
-    private LEDPattern pattern = LEDPattern.rainbow(255, 128); // Placeholder until something else gets loaded
 
     /** Creates a new LEDSubsystem. */
     private LEDSubsystem() {
@@ -47,8 +42,7 @@ public class LEDSubsystem extends SubsystemBase {
 
         this.blinkTimer.start();
 
-        SmartDashboard.putString("LED/Color1", StatusColors.OFF.color1.toHexString());
-        SmartDashboard.putString("LED/Color2", StatusColors.OFF.color2.toHexString());
+        SmartDashboard.putString("LED", StatusColors.OFF.color.toHexString());
     }
 
     @Override
@@ -68,11 +62,6 @@ public class LEDSubsystem extends SubsystemBase {
         // Blink color will always be current color, unless blinking, when it is always the blink color
         if (stickyTime >= 0 && this.stickyTimer.hasElapsed(stickyTime)) {
             setColor(StatusColors.OFF);
-        }
-
-        if(LEDConstants.SCROLL){
-            pattern.applyTo(this.LEDStripBuffer);
-            this.LEDStrip.setData(this.LEDStripBuffer);
         }
     }
 
@@ -100,14 +89,9 @@ public class LEDSubsystem extends SubsystemBase {
             this.blinkTimer.reset();
         }
 
-        // LEDPattern pattern = LEDPattern.solid(newColor.color).atBrightness(newColor.brightness);
-        pattern = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, newColor.color1, newColor.color2);
-        if(LEDConstants.SCROLL){
-            pattern = pattern.scrollAtAbsoluteSpeed(Units.MetersPerSecond.of(LEDConstants.SCROLL_SPEED), LEDSpacing);
-        } else {
-            pattern.applyTo(this.LEDStripBuffer);
-            this.LEDStrip.setData(this.LEDStripBuffer);
-        }
+        LEDPattern pattern = LEDPattern.solid(newColor.color).atBrightness(newColor.brightness);
+        pattern.applyTo(this.LEDStripBuffer);
+        this.LEDStrip.setData(this.LEDStripBuffer);
 
         // Don't save black as a blink color on blinks
         if (this.shouldBlink && newColor == StatusColors.OFF) {
@@ -125,22 +109,19 @@ public class LEDSubsystem extends SubsystemBase {
      * @param newColor The new color to use.
      */
     private void updateDashboardAndLogs(StatusColors newColor) {
-        String hexString1 = newColor.color1.toHexString();
-        String hexString2 = newColor.color2.toHexString();
+        String hexString = newColor.color.toHexString();
 
         Logger.recordOutput("LED/Status", newColor);
-        Logger.recordOutput("LED/Color1", hexString1);
-        Logger.recordOutput("LED/Color2", hexString2);
+        Logger.recordOutput("LED/Color", hexString);
 
-        // Do this because, to display orange on the LEDs, we have to use dark red,
-        // but it looks like orange, and thus it should be an actual orange on the dashboard.
-        if(newColor.equals(StatusColors.RSL)){
-            hexString1 = Color.kDarkOrange.toHexString();
-            hexString2 = hexString1;
-        }
-
-        SmartDashboard.putString("LED/Color1", hexString1);
-        SmartDashboard.putString("LED/Color2", hexString2);
+        SmartDashboard.putString(
+                "LED",
+                newColor.equals(StatusColors.RSL)
+                        // Do this because, to display orange on the LEDs, we have to use dark red,
+                        // but it looks like orange, and thus it should be an actual orange on the dashboard.
+                        ? Color.kDarkOrange.toHexString()
+                        : hexString
+        );
     }
 
     /**
@@ -176,5 +157,16 @@ public class LEDSubsystem extends SubsystemBase {
         } else {
             LEDSubsystem.getInstance().setColor(StatusColors.OK);
         }
+    }
+
+    /**
+     * Gets color of the current strip.
+     * @return The color of the strip.
+     * @apiNote This uses the FIRST index of the LED strip (first node),
+     * but this should not be a problem because we always set the whole strip to a solid color.
+     * @apiNote Returns null if the color doesn't exist in StatusColors.
+     */
+    public StatusColors getActualLEDColor() {
+        return StatusColors.getColor(this.LEDStripBuffer.getLED(0));
     }
 }

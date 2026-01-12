@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,9 +38,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     private TalonFX motor = new TalonFX(PivotConstants.MOTOR_ID, CAN_BUS);
+    private DigitalInput limitSwitch = new DigitalInput(PivotConstants.LIMIT_SWITCH_ID);
     private MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0);
 
     private double lastPosition = Double.NaN;
+    private boolean lastAtEndstop = true;
 
     private PivotPositionNames positionName;
 
@@ -58,6 +61,13 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         double position = getPosition();
+        boolean atEndstop = isAtEndstop();
+
+        if (atEndstop != this.lastAtEndstop) {
+            SmartDashboard.putBoolean("Pivot/AtEndstop", atEndstop);
+            Logger.recordOutput("Pivot/AtEndstop", atEndstop);
+            this.lastAtEndstop = atEndstop;
+        }
 
         if (position != this.lastPosition) {
             SmartDashboard.putNumber("Pivot/Position", position);
@@ -221,11 +231,22 @@ public class PivotSubsystem extends SubsystemBase {
         return (position >= PivotConstants.MINIMUM_SAFE && position <= PivotConstants.MAXIMUM_SAFE);
     }
 
+    /** Set the position name of the current pivot position
+     * @param name the name of the position
+     */
     public void setPositionName(PivotPositionNames name) {
         positionName = name;
     }
 
+    /** Get the pivot position name */
     public PivotPositionNames getPositionName() {
         return positionName;
+    }
+
+    /** Get the value of the endstop limit switch
+     * @return True if the endstop is being pressed
+     */
+    public boolean isAtEndstop() {
+        return !limitSwitch.get();
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.manipulator;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.PhysicalConstants.ManipulatorConstants;
 import frc.robot.constants.VirtualConstants.SubsystemStates;
@@ -8,19 +9,21 @@ import frc.robot.led.StatusColors;
 
 /** A command that intakes the coral */
 public class IntakeCoralCommand extends Command {
+    private Debouncer debouncer;
+
     public IntakeCoralCommand() {
         setName("IntakeCoralCommand");
         addRequirements(ManipulatorSubsystem.getInstance());
+
+        debouncer = new Debouncer(.1);
     }
 
 
     @Override
     public void initialize() {
-        ManipulatorSubsystem.getInstance().setCoralMotor(ManipulatorConstants.CORAL_INTAKE_SPEED);
-        ManipulatorSubsystem.getInstance().setFunnelMotor(ManipulatorConstants.FUNNEL_INTAKE_SPEED);
+        ManipulatorSubsystem.getInstance().setCoralMotor(-ManipulatorConstants.CORAL_INTAKE_SPEED);
 
         ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.INTAKING);
-        ManipulatorSubsystem.getInstance().setState("Funnel", SubsystemStates.INTAKING);
     }
 
     @Override
@@ -29,22 +32,18 @@ public class IntakeCoralCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        ManipulatorSubsystem.getInstance().setCoralMotor(0);
-        ManipulatorSubsystem.getInstance().setFunnelMotor(0);
-
-        ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.IDLE);
-        ManipulatorSubsystem.getInstance().setState("Funnel", SubsystemStates.IDLE);
-
         if(!interrupted) {
             LEDSubsystem.getInstance().setColor(StatusColors.CORAL);
         }
+
+        ManipulatorSubsystem.getInstance().setCoralMotor(0);
+
+        ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.HOLDING);
     }
 
 
     @Override
     public boolean isFinished() {
-        return
-            ManipulatorSubsystem.getInstance().getCoralRotorVelocity() == 0 &&
-            ManipulatorSubsystem.getInstance().getCoralStatorCurrent() >= ManipulatorConstants.CORAL_CURRENT_LIMIT;
+        return debouncer.calculate(ManipulatorSubsystem.getInstance().getCoralStatorCurrent() >= ManipulatorConstants.CORAL_CURRENT_LIMIT);
     }
 }

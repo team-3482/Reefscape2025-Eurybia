@@ -18,6 +18,7 @@ public class ZeroPivotCommand extends Command {
 
     @Override
     public void initialize() {
+        System.out.println("zeroing pivot");
         PivotSubsystem.getInstance().setPivotSpeed(-PivotConstants.ZERO_SPEED, false);
     }
 
@@ -38,6 +39,6 @@ public class ZeroPivotCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return PivotSubsystem.getInstance().isAtEndstop();
     }
 }
