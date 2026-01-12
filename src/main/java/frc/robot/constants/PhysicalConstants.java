@@ -38,7 +38,7 @@ public final class PhysicalConstants {
         public static final double LINEAR_CONSTANT_MULT = 0.75;
 
         /** Tolerance used for elevator command in meters. */
-        public static final double HEIGHT_TOLERANCE = 0.05;
+        public static final double HEIGHT_TOLERANCE = 0.01;
 
         /** The voltage to run the motors at to zero the elevator */
         public static final double ZERO_ELEVATOR_VOLTAGE = 2;
@@ -94,7 +94,7 @@ public final class PhysicalConstants {
         /* Motion Magic Config */
         public static final double ROTOR_TO_MECHANISM_RATIO = (double) 203280 / 3240;
         public static final double CRUISE_SPEED = 3;
-        public static final double ACCELERATION = 7.5;
+        public static final double ACCELERATION = 6.5;
 
         /** Gains used for Motion Magic slot 0. */
         public static final class Slot0Gains {
@@ -102,7 +102,7 @@ public final class PhysicalConstants {
             public static final double kS = 0.23;
             public static final double kV = 0;
             public static final double kA = 0;
-            public static final double kP = 192;
+            public static final double kP = 128;
             public static final double kI = 0;
             public static final double kD = 0;
         }

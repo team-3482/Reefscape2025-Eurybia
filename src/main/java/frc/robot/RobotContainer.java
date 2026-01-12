@@ -73,6 +73,8 @@ public class RobotContainer {
 
         SmartDashboard.putData("Auto Chooser", this.autoChooser);
         SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
+
+        ManipulatorSubsystem.getInstance().setState("Coral", SubsystemStates.IDLE); // TODO auton: set to holding if when preloaded
     }
 
     /** Creates instances of each subsystem so periodic runs on startup. */
@@ -301,14 +303,14 @@ public class RobotContainer {
             new MovePivotCommand(PivotPositions.CORAL, PivotPositionNames.CORAL)
         ));
 
-        // TODO PLACEHOLDER!!!!!!!!!
+        // Left Stick (Pressed) -> Algae Processor Outtake
         this.operatorController.leftStick().onTrue(Commands.sequence(
             new PivotSafetyCommand(ElevatorPositions.IDLE_HEIGHT),
             new MoveElevatorCommand(ElevatorPositions.IDLE_HEIGHT, slowElevatorSupplier),
             new MovePivotCommand(PivotPositions.PROCESSOR, PivotPositionNames.CORAL)
         ));
 
-        // TODO PLACEHOLDER!!!!!!!!!
+        // Right Stick (Pressed) -> Algae Barge Outtake
         this.operatorController.rightStick().onTrue(Commands.sequence(
             new PivotSafetyCommand(ElevatorPositions.L4_CORAL),
             new MoveElevatorCommand(ElevatorPositions.L4_CORAL, slowElevatorSupplier),
@@ -316,6 +318,7 @@ public class RobotContainer {
         ));
 
         // Left Bumper -> Intake Coral
+        System.out.println(ManipulatorSubsystem.getInstance().getCoralState().equals(SubsystemStates.IDLE));
         if(ManipulatorSubsystem.getInstance().getCoralState().equals(SubsystemStates.IDLE)){
             this.operatorController.leftBumper().onTrue(Commands.sequence(
                 new PivotSafetyCommand(ElevatorPositions.INTAKE),
@@ -327,7 +330,7 @@ public class RobotContainer {
             ));
         }
 
-        //Right Bumper -> Outtake Coral
+        // Right Bumper -> Outtake Coral
         this.operatorController.rightBumper().whileTrue(new OuttakeCoralCommand());
 
         // A -> Intake L2 Algae, Y -> Intake L3 Algae

@@ -4,7 +4,6 @@
 
 package frc.robot.vision;
 
-import com.ctre.phoenix6.Utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -78,7 +77,7 @@ public class LimelightSubsystem extends SubsystemBase {
             // Shuffleboard camera feeds.
             HttpCamera bottomLLCamera = new HttpCamera(
                 LimelightConstants.BOTTOM_LL,
-                "http://" + "10.34.82.12" + ":5800/stream.mjpg"
+                "http://" + "10.34.82.20" + ":5800/stream.mjpg"
             );
 
             CameraServer.startAutomaticCapture(bottomLLCamera);
@@ -142,10 +141,12 @@ public class LimelightSubsystem extends SubsystemBase {
                     ? Units.degreesToRadians(25)
                     : data.calculateRotationDeviation()
             ));
-            SwerveSubsystem.getInstance().addVisionMeasurement(
-                data.MegaTag.pose,
-                Utils.fpgaToCurrentTime(data.MegaTag.timestampSeconds)
-            );
+            // SwerveSubsystem.getInstance().addVisionMeasurement(
+            //     data.MegaTag.pose,
+            //     Utils.fpgaToCurrentTime(data.MegaTag.timestampSeconds)
+            // );
+
+            QuestNavSubsystem.getInstance().resetPose(data.MegaTag2.pose);
         }
 
         if (data.canTrustPosition()) {
@@ -155,10 +156,12 @@ public class LimelightSubsystem extends SubsystemBase {
                 this.waitingForLimelights ? 0.25 : data.calculatePositionDeviation(),
                 9999999
             ));
-            SwerveSubsystem.getInstance().addVisionMeasurement(
-                data.MegaTag2.pose,
-                Utils.fpgaToCurrentTime(data.MegaTag2.timestampSeconds)
-            );
+            // SwerveSubsystem.getInstance().addVisionMeasurement(
+            //     data.MegaTag2.pose,
+            //     Utils.fpgaToCurrentTime(data.MegaTag2.timestampSeconds)
+            // );
+
+            QuestNavSubsystem.getInstance().resetPose(data.MegaTag2.pose);
         }
 
         // This method is surprisingly efficient, generally below 1 ms.

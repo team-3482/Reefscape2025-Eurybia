@@ -36,7 +36,7 @@ public final class VirtualConstants {
 
     /** Constants for elevator heights */
     public static final class ElevatorPositions {
-        public static final double INTAKE = -0.02; // this offset makes sure it actually goes to zero, something is off here
+        public static final double INTAKE = 0.05;
         public static final double L2_CORAL = 0.19;
         public static final double L3_CORAL = 0.38;
         public static final double L4_CORAL = 0.78;
